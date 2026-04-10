@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block titulo_pagina %}Perfil de {{ perfil.user.nameUser }}{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3>Perfil de {{ perfil.user.nameUser }}</h3>
+                    {% if perfil.user_id == current_user.idUser %}
+                    <a href="{{ url_for('perfil.edit', id=perfil.idPerfil) }}" class="btn btn-primary btn-sm">Editar Perfil</a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Información del Usuario</h5>
+                            <p><strong>Nombre:</strong> {{ perfil.user.nameUser }}</p>
+                            <p><strong>Email:</strong> {{ perfil.user.email }}</p>
+                        </div>
+                        <div class="col-md-8">
+                            <h5>Biografía</h5>
+                            {% if perfil.bio %}
+                            <div class="bg-light p-3 rounded">
+                                {{ perfil.bio }}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-secondary">
+                                <em>Este usuario aún no ha escrito su biografía.</em>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('perfil.index') }}" class="btn btn-secondary">← Volver a Perfiles</a>
+                    {% if perfil.user_id == current_user.idUser %}
+                    <a href="{{ url_for('perfil.mi_perfil') }}" class="btn btn-primary ms-2">Mi Perfil</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
