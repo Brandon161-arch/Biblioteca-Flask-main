@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 
+{% block titulo_pagina %}
+Publicaciones
+{% endblock %}
+
 {% block content %}
 
 <h1>Publicaciones</h1>
 
-<!-- BOTÓN PUBLICAR (AÑADIDO, NO MODIFICA TU DISEÑO) -->
+<!-- BOTÓN PUBLICAR -->
 <a href="{{ url_for('publicacion.add') }}">
     <button>Publicar</button>
 </a>
@@ -13,32 +17,39 @@
 
 {% if publicaciones %}
 
-    {% for pub in publicaciones %}
-        <p>{{ pub.titulo }}</p>
+    {% for p in publicaciones %}
+        <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
+
+            <!-- TÍTULO -->
+            <h3>{{ p.Titulo }}</h3>
+
+            <!-- CONTENIDO -->
+            <p>{{ p.contenido }}</p>
+
+            <!-- USUARIO -->
+            <p>
+                <strong>Usuario:</strong> {{ p.usuario.nameUser }}
+            </p>
+
+            <!-- ETIQUETAS -->
+            <p>
+                <strong>Etiquetas:</strong>
+
+                {% if p.etiquetas %}
+                    {% for e in p.etiquetas %}
+                        <span>#{{ e.nombre }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span>Sin etiquetas</span>
+                {% endif %}
+
+            </p>
+
+        </div>
     {% endfor %}
 
 {% else %}
     <p>No hay publicaciones aún</p>
 {% endif %}
-
-<!-- ===== TU BOCETO ORIGINAL (NO TOCADO) ===== -->
-{% for p in publicaciones %}
-    <div>
-        <h3>{{ p.Titulo }}</h3>
-        <p>{{ p.contenido }}</p>
-
-        <p><strong>Usuario:</strong> {{ p.usuario.nameUser }}</p>
-
-        <p><strong>Etiquetas:</strong>
-            {% for e in p.etiquetas %}
-                {{ e.nombre }}
-            {% else %}
-                Sin etiquetas
-            {% endfor %}
-        </p>
-
-        <hr>
-    </div>
-{% endfor %}
 
 {% endblock %}

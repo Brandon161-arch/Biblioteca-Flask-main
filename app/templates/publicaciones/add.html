@@ -27,7 +27,14 @@ Crear publicación
                         <textarea name="contenido" class="form-control" rows="5" placeholder="Escribe tu publicación..." required></textarea>
                     </div>
 
-                    <!-- BOTÓN -->
+                    <!-- 🟢 ETIQUETAS (NUEVO) -->
+                    <div class="mb-3">
+                        <label class="form-label">Etiquetas</label>
+                        <input type="text" name="etiquetas" class="form-control" placeholder="Ej: flask, python, web">
+                        <small class="text-muted">Separa las etiquetas con comas (,)</small>
+                    </div>
+
+                    <!-- BOTONES -->
                     <div class="d-flex justify-content-between">
 
                         <a href="{{ url_for('publicacion.lista') }}" class="btn btn-secondary">
