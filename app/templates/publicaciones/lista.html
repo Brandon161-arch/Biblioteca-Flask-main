@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Publicaciones</h1>
+
+<!-- BOTÓN PUBLICAR (AÑADIDO, NO MODIFICA TU DISEÑO) -->
+<a href="{{ url_for('publicacion.add') }}">
+    <button>Publicar</button>
+</a>
+
+<hr>
+
+{% if publicaciones %}
+
+    {% for pub in publicaciones %}
+        <p>{{ pub.titulo }}</p>
+    {% endfor %}
+
+{% else %}
+    <p>No hay publicaciones aún</p>
+{% endif %}
+
+<!-- ===== TU BOCETO ORIGINAL (NO TOCADO) ===== -->
+{% for p in publicaciones %}
+    <div>
+        <h3>{{ p.Titulo }}</h3>
+        <p>{{ p.contenido }}</p>
+
+        <p><strong>Usuario:</strong> {{ p.usuario.nameUser }}</p>
+
+        <p><strong>Etiquetas:</strong>
+            {% for e in p.etiquetas %}
+                {{ e.nombre }}
+            {% else %}
+                Sin etiquetas
+            {% endfor %}
+        </p>
+
+        <hr>
+    </div>
+{% endfor %}
+
+{% endblock %}

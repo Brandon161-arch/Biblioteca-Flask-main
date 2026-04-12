@@ -1,9 +1,11 @@
 from flask import Flask
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import os
 
 db = SQLAlchemy()
+migrate = Migrate()
 login_manager = LoginManager()
 
 def create_app():
@@ -11,6 +13,7 @@ def create_app():
     app = Flask(__name__)    
     app.config.from_object('config.Config')
     db.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
 
@@ -19,7 +22,10 @@ def create_app():
         from .models.users import User
         return User.query.get(int(idUser))
 
-    # Import all models so they are registered with SQLAlchemy
+    
+ # Import all models so they are registered with SQLAlchemy
+    from .models.publicacion import Publicacion
+    from .models.etiqueta import Etiqueta
     from .models.users import User
     from .models.authors import Author
     from .models.rooms import Room
@@ -29,13 +35,16 @@ def create_app():
     from app.routes import (
         auth, author_routes, users_route, 
         room_routes, users_route_async, perfil_route
-    )
+    )  
+    from app.routes import publicacion_route
+    
     app.register_blueprint(auth.bp)
     app.register_blueprint(author_routes.bp)
     app.register_blueprint(users_route.bp)
     app.register_blueprint(room_routes.bp)
     app.register_blueprint(users_route_async.bp)
     app.register_blueprint(perfil_route.bp)
+    app.register_blueprint(publicacion_route.bp)
 
     @app.errorhandler(Exception)
     def handle_error(e):
