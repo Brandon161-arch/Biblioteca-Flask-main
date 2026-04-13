@@ -20,17 +20,19 @@
         MiApp
     </a>
 
-    <div class="ms-auto d-flex gap-3">
+    <div class="ms-auto d-flex gap-3 align-items-center">
 
+        <!-- PUBLICACIONES -->
         <a class="nav-link text-white" href="{{ url_for('publicacion.lista') }}">
             Publicaciones
         </a>
 
-        <a class="nav-link text-white" href="#">
+        <!-- 🔥 PERFILES (CORREGIDO) -->
+        <a class="nav-link text-white" href="{{ url_for('user.index') }}">
             Perfiles
         </a>
 
-        <!-- BOTÓN PUBLICAR (IMPORTANTE) -->
+        <!-- BOTÓN PUBLICAR -->
         <a class="btn btn-light btn-sm" href="{{ url_for('publicacion.add') }}">
             <i class="bi bi-plus-circle"></i> Publicar
         </a>
