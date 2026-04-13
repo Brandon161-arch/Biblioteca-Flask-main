@@ -28,20 +28,18 @@ def create_app():
     from .models.etiqueta import Etiqueta
     from .models.users import User
     from .models.authors import Author
-    from .models.rooms import Room
     from .models.perfil import Perfil
 
     # Register blueprints
     from app.routes import (
         auth, author_routes, users_route, 
-        room_routes, users_route_async, perfil_route
+         users_route_async, perfil_route
     )  
     from app.routes import publicacion_route
     
     app.register_blueprint(auth.bp)
     app.register_blueprint(author_routes.bp)
     app.register_blueprint(users_route.bp)
-    app.register_blueprint(room_routes.bp)
     app.register_blueprint(users_route_async.bp)
     app.register_blueprint(perfil_route.bp)
     app.register_blueprint(publicacion_route.bp)
