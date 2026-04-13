@@ -10,21 +10,27 @@ def login():
         nameUser = request.form['nameUser']
         passwordUser = request.form['passwordUser']
         
-        if (user := User.query.filter_by(nameUser=nameUser, passwordUser=passwordUser).first()):
+        user = User.query.filter_by(nameUser=nameUser, passwordUser=passwordUser).first()
+
+        if user:
             login_user(user)
             flash("Login successful!", "success")
-            return redirect(url_for('user.index'))
+            return redirect(url_for('user.index'))  # 🔥 siempre al buscador
         
         flash('Invalid credentials. Please try again.', 'danger')
     
+    # 🔥 si ya está logueado → también al buscador (NO dashboard)
     if current_user.is_authenticated:
-        return redirect(url_for('auth.dashboard'))
+        return redirect(url_for('user.index'))
+
     return render_template("login.html")
+
 
 @bp.route('/dashboard')
 @login_required
-def dashboard():    
+def dashboard():
     return f'Welcome, {current_user.nameUser}! This is your dashboard.'
+
 
 @bp.route('/logout')
 @login_required
