@@ -2,7 +2,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
 
-      <a class="navbar-brand" href="/">Biblioteca</a>
+      <a class="navbar-brand" href="{{ url_for('auth.login') }}">Biblioteca</a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" 
               aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -14,7 +14,7 @@
 
               <!-- Usuarios -->
               <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarUsuarios" role="button" data-bs-toggle="dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                       Usuarios
                   </a>
                   <ul class="dropdown-menu">
@@ -30,7 +30,7 @@
 
               <!-- Salas -->
               <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarSalas" role="button" data-bs-toggle="dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                       Salas
                   </a>
                   <ul class="dropdown-menu">
@@ -39,7 +39,7 @@
                   </ul>
               </li>
 
-              <!-- 🔥 PERFILES (CORREGIDO) -->
+              <!-- 🔥 PERFILES (LINK DIRECTO CORRECTO) -->
               <li class="nav-item">
                   <a class="nav-link" href="{{ url_for('user.index') }}">
                       Perfiles
@@ -48,7 +48,7 @@
 
               <!-- Publicaciones -->
               <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarPublicaciones" role="button" data-bs-toggle="dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                       Publicaciones
                   </a>
                   <ul class="dropdown-menu">
