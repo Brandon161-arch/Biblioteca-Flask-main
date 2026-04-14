@@ -1,164 +1,109 @@
 {% extends "base.html" %}
-{% block titulo_pagina %}Lista de Usuarios{% endblock %}
+
+{% block titulo_pagina %}
+Usuarios
+{% endblock %}
 
 {% block content %}
 
-<div class="text-start mb-3">
-    <a href="{{ url_for('user.add') }}" class="btn btn-primary btn-sm">
-        <i class="bi bi-person-plus"></i> Agregar usuario
-    </a>
+<div class="container mt-4">
 
-    <a href="#" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#qrReaderModal">
-        <i class="bi bi-qr-code-scan"></i> Lector QR
-    </a>
-</div>
+    <h3 class="mb-4 text-center">Perfiles</h3>
 
-<!-- 🔍 BUSCADOR BONITO -->
-<div class="input-group mb-4">
-    <span class="input-group-text"><i class="bi bi-search"></i></span>
-    <input type="text" id="searchInput" class="form-control" placeholder="Buscar usuario...">
-</div>
+    {% if users and users|length > 0 %}
 
-<!-- 👥 TARJETAS (NUEVO DISEÑO) -->
-<div class="row" id="userTable">
+        <div class="row">
 
-    {% for user in data %}
-    <div class="col-md-4 mb-4 user-card">
+            {% for user in users %}
 
-        <div class="card shadow-sm border-0 h-100">
+            <div class="col-md-4 mb-3">
 
-            <div class="card-body text-center">
+                <div class="card shadow-sm">
 
-                <!-- 👤 NOMBRE -->
-                <h5 class="card-title">{{ user.nameUser }}</h5>
+                    <div class="card-body text-center">
 
-                <!-- 📧 EMAIL (si tienes) -->
-                <p class="text-muted small">{{ user.email }}</p>
+                        <!-- NOMBRE -->
+                        <h5 class="card-title">
+                            {{ user.nameUser or user.username or "Sin nombre" }}
+                        </h5>
 
-                <!-- 🔢 ID -->
-                <p class="text-muted">ID: {{ user.idUser }}</p>
+                        <!-- ID -->
+                        <p class="text-muted">
+                            ID: {{ user.idUser or user.id or "Sin ID" }}
+                        </p>
 
-                <!-- 🔘 BOTONES -->
-                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                        <!-- BOTONES -->
+                        <div class="d-flex justify-content-center gap-2 flex-wrap">
 
-                    <a href="{{ url_for('user.detail', id=user.idUser) }}" class="btn btn-success btn-sm">
-                        <i class="bi bi-person"></i>
-                    </a>
+                            <!-- VER PERFIL -->
+                            <a href="{{ url_for('user.detail', id=user.idUser or user.id) }}" 
+                               class="btn btn-success btn-sm">
+                                <i class="bi bi-person"></i>
+                            </a>
 
-                    <a href="{{ url_for('user.edit', id=user.idUser) }}" class="btn btn-primary btn-sm">
-                        <i class="bi bi-pencil-square"></i>
-                    </a>
+                            <!-- QR -->
+                            <button type="button"
+                                    class="btn btn-info btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#qrModal{{ user.idUser or user.id }}">
+                                <i class="bi bi-qr-code"></i>
+                            </button>
 
-                    <a href="{{ url_for('user.delete', id=user.idUser) }}" class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash"></i>
-                    </a>
+                        </div>
 
-                    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#qrModal{{ user.idUser }}">
-                        <i class="bi bi-qr-code"></i>
-                    </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- MODAL QR -->
+            <div class="modal fade"
+                 id="qrModal{{ user.idUser or user.id }}"
+                 tabindex="-1"
+                 aria-hidden="true">
+
+                <div class="modal-dialog modal-dialog-centered">
+
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">QR del usuario</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body text-center">
+
+                            <p>
+                                <strong>ID:</strong>
+                                {{ user.idUser or user.id }}
+                            </p>
+
+                            <!-- QR placeholder -->
+                            <div class="border p-3">
+                                QR aquí
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
+
+            {% endfor %}
+
         </div>
 
-        <!-- 📱 MODAL QR -->
-        <div class="modal fade" id="qrModal{{ user.idUser }}" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
+    {% else %}
 
-                    <div class="modal-header">
-                        <h5>Código QR de {{ user.nameUser }}</h5>
-                        <button class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body text-center">
-                        <img src="{{ url_for('user.generate_qr', id=user.idUser) }}" class="img-fluid">
-                    </div>
-
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary btn-sm w-100" data-bs-dismiss="modal">Cerrar</button>
-                        <a href="{{ url_for('user.generate_qr', id=user.idUser) }}" class="btn btn-primary btn-sm w-100" download>
-                            Descargar QR
-                        </a>
-                    </div>
-
-                </div>
-            </div>
+        <div class="alert alert-warning text-center">
+            No hay usuarios registrados
         </div>
 
-    </div>
-    {% endfor %}
+    {% endif %}
 
 </div>
-
-<!-- 🟡 MENSAJE SI NO HAY USUARIOS -->
-{% if not data %}
-    <p class="text-center text-muted">No hay usuarios registrados</p>
-{% endif %}
-
-<!-- 🔍 SCRIPT BUSCADOR MEJORADO -->
-<script>
-document.getElementById('searchInput').addEventListener('keyup', function() {
-    const searchValue = this.value.toLowerCase();
-    const cards = document.querySelectorAll('.user-card');
-
-    cards.forEach(card => {
-        const name = card.querySelector('.card-title').textContent.toLowerCase();
-        card.style.display = name.includes(searchValue) ? '' : 'none';
-    });
-});
-</script>
-
-<!-- 📱 MODAL LECTOR QR -->
-<div class="modal fade" id="qrReaderModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5>Lector de Código QR</h5>
-                <button class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <div id="reader" style="width: 100%;"></div>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<script>
-let html5QrcodeScanner;
-
-function onScanSuccess(decodedText) {
-    try {
-        const jsonObject = JSON.parse(decodedText);
-        const id = jsonObject.ID;
-        window.location.href = `/User/detail/${id}`;
-    } catch (error) {
-        alert("QR inválido");
-    }
-}
-
-const qrReaderModal = document.getElementById('qrReaderModal');
-
-qrReaderModal.addEventListener('shown.bs.modal', function () {
-    html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-    html5QrcodeScanner.render(onScanSuccess);
-});
-
-qrReaderModal.addEventListener('hidden.bs.modal', function () {
-    if (html5QrcodeScanner) {
-        html5QrcodeScanner.clear();
-    }
-});
-</script>
-
-<script src="{{ url_for('static', filename='html5-qrcode.min.js') }}"></script>
 
 {% endblock %}
