@@ -5,9 +5,9 @@ publicacion_etiqueta = db.Table('publicacion_etiqueta',
     db.Column('etiqueta_id', db.Integer, db.ForeignKey('etiqueta.id')),
 )
 class Publicacion(db.Model):
-    __tablaname__='publicacion'
+    __tablename__='publicacion'
     id= db.Column(db.Integer, primary_key=True)
-    Titulo= db.Column(db.String(200), nullable=False)
+    titulo= db.Column(db.String(200), nullable=False)
     contenido= db.Column(db.Text,nullable=False)
 
     usuario_id=db.Column(db.Integer,db.ForeignKey('users.idUser'))
