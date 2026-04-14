@@ -25,6 +25,15 @@ Publicaciones
 
             <!-- CONTENIDO -->
             <p>{{ p.contenido }}</p>
+            {% if current_user.is_authenticated and p.usuario_id == current_user.idUser %}
+    <a href="{{ url_for('publicacion.editar', id=p.id) }}">
+        <button>Editar</button>
+    </a>
+
+    <a href="{{ url_for('publicacion.eliminar', id=p.id) }}">
+        <button>Eliminar</button>
+    </a>
+{% endif %}
 
             <!-- USUARIO -->
             <p>
