@@ -1,24 +1,30 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, send_file
+from flask_login import login_required, current_user
 from app.models.users import User
 from app.models.perfil import Perfil
 from app import db
 from io import BytesIO
 import base64
 
-bp = Blueprint('user', __name__, url_prefix='/user')  # 🔥 MINÚSCULA (IMPORTANTE)
+bp = Blueprint('user', __name__, url_prefix='/user')
 
-# 🔍 LISTADO DE USUARIOS
+
+# 🔍 LISTADO DE USUARIOS (requiere login)
 @bp.route('/')
+@login_required
 def index():
-    data = User.query.all()
-    return render_template('users/index.html', data=data)
+    users = User.query.all()
+    return render_template('users/index.html', users=users)
+
 
 # 📦 API JSON
 @bp.route('/js')
+@login_required
 def indexjs():
-    data = User.query.all()
-    result = [user.to_dict() for user in data]
+    users = User.query.all()
+    result = [user.to_dict() for user in users]
     return jsonify(result)
+
 
 # ➕ AGREGAR USUARIO
 @bp.route('/add', methods=['GET', 'POST'])
@@ -42,6 +48,7 @@ def add():
             user_id=new_user.idUser,
             bio=''
         )
+
         db.session.add(new_perfil)
         db.session.commit()
 
@@ -49,10 +56,24 @@ def add():
 
     return render_template('users/add.html')
 
-# ✏️ EDITAR USUARIO
+
+# 👤 DETALLE USUARIO
+@bp.route('/detail/<int:id>')
+@login_required
+def detail(id):
+    user = User.query.get_or_404(id)
+    return render_template('users/detail.html', user=user)
+
+
+# ✏️ EDITAR USUARIO (SOLO EL DUEÑO)
 @bp.route('/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
 def edit(id):
     user = User.query.get_or_404(id)
+
+    # 🔐 SOLO EL DUEÑO
+    if user.idUser != current_user.idUser:
+        return "No puedes editar este usuario", 403
 
     if request.method == 'POST':
         user.nameUser = request.form['nameUser']
@@ -60,28 +81,30 @@ def edit(id):
         user.email = request.form['email']
 
         db.session.commit()
-        return redirect(url_for('user.index'))
+        return redirect(url_for('user.detail', id=user.idUser))
 
     return render_template('users/edit.html', user=user)
 
-# 👤 DETALLE
-@bp.route('/detail/<int:id>')
-def detail(id):
-    user = User.query.get_or_404(id)
-    return render_template('users/detail.html', user=user)
 
-# 🗑️ ELIMINAR
+# 🗑️ ELIMINAR USUARIO (SOLO EL DUEÑO)
 @bp.route('/delete/<int:id>')
+@login_required
 def delete(id):
     user = User.query.get_or_404(id)
+
+    # 🔐 SOLO EL DUEÑO
+    if user.idUser != current_user.idUser:
+        return "No puedes eliminar este usuario", 403
 
     db.session.delete(user)
     db.session.commit()
 
-    return redirect(url_for('user.index'))
+    return redirect(url_for('auth.logout'))
 
-# 📱 GENERAR QR (CORREGIDO)
+
+# 📱 GENERAR QR
 @bp.route('/qr/<int:id>')
+@login_required
 def generate_qr(id):
     user = User.query.get_or_404(id)
 
@@ -92,4 +115,3 @@ def generate_qr(id):
         BytesIO(qr_img),
         mimetype='image/png'
     )
-
