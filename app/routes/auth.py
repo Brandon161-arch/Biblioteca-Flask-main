@@ -10,16 +10,18 @@ def login():
         nameUser = request.form['nameUser']
         passwordUser = request.form['passwordUser']
         
-        user = User.query.filter_by(nameUser=nameUser, passwordUser=passwordUser).first()
+        # 🔥 BUSCAR SOLO POR USUARIO
+        user = User.query.filter_by(nameUser=nameUser).first()
 
-        if user:
+        # 🔥 VALIDAR CONTRASEÑA
+        if user and user.passwordUser == passwordUser:
             login_user(user)
             flash("Login successful!", "success")
-            return redirect(url_for('user.index'))  # 🔥 siempre al buscador
+            return redirect(url_for('user.index'))
         
         flash('Invalid credentials. Please try again.', 'danger')
     
-    # 🔥 si ya está logueado → también al buscador (NO dashboard)
+    # 🔥 SI YA ESTÁ LOGUEADO
     if current_user.is_authenticated:
         return redirect(url_for('user.index'))
 
